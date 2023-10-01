@@ -82,9 +82,13 @@ class CAR:
 
   # Pre-global
   FORESTER_PREGLOBAL = "SUBARU FORESTER 2017 - 2018"
-  LEGACY_PREGLOBAL = "SUBARU LEGACY 2015 - 2018"
+  LEGACY_PREGLOBAL = "SUBARU LEGACY 2015 - 2017"
+  LEGACY_PREGLOBAL_2018 = "SUBARU LEGACY 2018 - 2019"
+  LEVORG_PREGLOBAL = "SUBARU LEVORG 2016"
   OUTBACK_PREGLOBAL = "SUBARU OUTBACK 2015 - 2017"
   OUTBACK_PREGLOBAL_2018 = "SUBARU OUTBACK 2018 - 2019"
+  WRX_PREGLOBAL = "SUBARU WRX 2018"
+  
 
 
 class Footnote(Enum):
@@ -127,6 +131,7 @@ CAR_INFO: Dict[str, Union[SubaruCarInfo, List[SubaruCarInfo]]] = {
   CAR.FORESTER_2022: SubaruCarInfo("Subaru Forester 2022", "All", car_parts=CarParts.common([CarHarness.subaru_c])),
   CAR.OUTBACK_2023: SubaruCarInfo("Subaru Outback 2023", "All", car_parts=CarParts.common([CarHarness.subaru_d])),
   CAR.ASCENT_2023: SubaruCarInfo("Subaru Ascent 2023", "All", car_parts=CarParts.common([CarHarness.subaru_d])),
+  CAR.WRX_PREGLOBAL: SubaruCarInfo("Subaru WRX 2016-18"),
 }
 
 SUBARU_VERSION_REQUEST = bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER]) + \
@@ -686,6 +691,31 @@ FW_VERSIONS = {
       b'\xa8\x8e\xf41\x00',
     ]
   }
+  CAR.WRX_PREGLOBAL: {
+    # 2018 Subaru WRX / @cferra
+    # 2016 Subaru WRX / @Hexinator
+    # Ecu, addr, subaddr: ROM ID
+    (Ecu.abs, 0x7b0, None): [
+      b'\x8a\x95R\x01',
+      b'j\x95R\x02',
+    ],
+    (Ecu.eps, 0x746, None): [
+      b'z\xb0\x00\x00',
+      b'Z\xb0\x00\x00',
+    ],
+    (Ecu.fwdCamera, 0x787, None): [
+      b'\x00\x00d\xae\x1f@ \r',
+      b'\x00\x00c\x93\x1f@\x10\r',
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x82\xb2)\xa0P\x97',
+      b'\xf1\x82\xa6)\xa0P\x07',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xcd\xfd\xd0\x80\x00',
+      b'\xcb\xfd\xd0\x80\x00',
+    ],
+  }
 }
 
 DBC = {
@@ -704,11 +734,13 @@ DBC = {
   CAR.LEGACY_PREGLOBAL: dbc_dict('subaru_outback_2015_generated', None),
   CAR.OUTBACK_PREGLOBAL: dbc_dict('subaru_outback_2015_generated', None),
   CAR.OUTBACK_PREGLOBAL_2018: dbc_dict('subaru_outback_2019_generated', None),
+  CAR.WRX_PREGLOBAL: dbc_dict('subaru_forester_2017_generated', None),
+
 }
 
 LKAS_ANGLE = {CAR.FORESTER_2022, CAR.OUTBACK_2023, CAR.ASCENT_2023}
 GLOBAL_GEN2 = {CAR.OUTBACK, CAR.LEGACY, CAR.OUTBACK_2023, CAR.ASCENT_2023}
-PREGLOBAL_CARS = {CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.OUTBACK_PREGLOBAL, CAR.OUTBACK_PREGLOBAL_2018}
+PREGLOBAL_CARS = {CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.OUTBACK_PREGLOBAL, CAR.OUTBACK_PREGLOBAL_2018, CAR.WRX_PREGLOBAL}
 HYBRID_CARS = {CAR.CROSSTREK_HYBRID, CAR.FORESTER_HYBRID}
 
 # Cars that temporarily fault when steering angle rate is greater than some threshold.
